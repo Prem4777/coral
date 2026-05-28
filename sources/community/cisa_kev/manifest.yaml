@@ -2,13 +2,48 @@ name: cisa_kev
 version: 0.1.0
 dsl_version: 3
 backend: http
-description: Query CVEs from the CISA Known Exploited Vulnerabilities (KEV) catalog — a public feed of actively exploited vulnerabilities.
+description: Query vulnerabilities and catalog metadata from the CISA Known Exploited Vulnerabilities (KEV) catalog.
 base_url: https://www.cisa.gov
 test_queries:
   - SELECT * FROM cisa_kev.vulnerabilities LIMIT 1
+  - SELECT catalogVersion, dateReleased, count FROM cisa_kev.catalog LIMIT 1
 tables:
+  - name: catalog
+    description: Single-row feed metadata for the CISA Known Exploited Vulnerabilities catalog. Use this to check feed freshness before joining with vulnerability rows.
+    guide: >-
+      Start with `SELECT catalogVersion, dateReleased, count FROM
+      cisa_kev.catalog`. The table returns one row with the top-level feed
+      metadata fields from the JSON document.
+    request:
+      method: GET
+      path: /sites/default/files/feeds/known_exploited_vulnerabilities.json
+    response:
+      rows_path: []
+    pagination:
+      mode: none
+    columns:
+      - name: catalogVersion
+        type: Utf8
+        description: CISA catalog version string.
+        nullable: false
+        expr: {kind: path, path: [catalogVersion]}
+      - name: dateReleased
+        type: Utf8
+        description: Date the catalog feed was released.
+        nullable: false
+        expr: {kind: path, path: [dateReleased]}
+      - name: count
+        type: Int64
+        description: Number of vulnerability rows in the feed.
+        nullable: false
+        expr: {kind: path, path: [count]}
+
   - name: vulnerabilities
     description: All entries in the CISA Known Exploited Vulnerabilities catalog. Each row is one CVE that CISA has confirmed as actively exploited.
+    guide: >-
+      Use this table for row-level vulnerability analysis. Join to
+      cisa_kev.catalog when you want to verify which feed snapshot the rows
+      came from.
     request:
       method: GET
       path: /sites/default/files/feeds/known_exploited_vulnerabilities.json

@@ -2,10 +2,10 @@
 
 **Version:** 0.1.0
 **Backend:** HTTP
-**Tables:** 1
+**Tables:** 2
 **Base URL:** `https://www.cisa.gov`
 
-Query CVEs from the [CISA Known Exploited Vulnerabilities catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — a public feed of vulnerabilities confirmed as actively exploited in the wild. No authentication required.
+Query vulnerabilities and feed metadata from the [CISA Known Exploited Vulnerabilities catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — a public feed of vulnerabilities confirmed as actively exploited in the wild. No authentication required.
 
 ```bash
 coral source add --file sources/community/cisa_kev/manifest.yaml
@@ -19,9 +19,27 @@ This is a static JSON file served by CISA. There is no documented rate limit, bu
 
 | Table | Description |
 |---|---|
+| `catalog` | Single-row feed metadata for the KEV catalog, including version and release date |
 | `vulnerabilities` | All entries in the KEV catalog — one row per CVE |
 
 ---
+
+### `catalog`
+
+Single-row feed metadata for the CISA KEV catalog. Use this table to check feed freshness before joining with vulnerability rows.
+
+| Column | Type | Description |
+|---|---|---|
+| `catalogVersion` | `Utf8` | CISA catalog version string |
+| `dateReleased` | `Utf8` | Date the catalog feed was released |
+| `count` | `Int64` | Number of vulnerability rows in the feed |
+
+## Quick Start
+
+```bash
+# Confirm connectivity and freshness metadata
+coral sql "SELECT catalogVersion, dateReleased, count FROM cisa_kev.catalog LIMIT 1"
+```
 
 ### `vulnerabilities`
 
@@ -43,7 +61,7 @@ All entries in the CISA KEV catalog. Each row is one CVE that CISA has confirmed
 
 ---
 
-## Quick Start
+## Vulnerability Queries
 
 ```bash
 # Confirm connectivity
