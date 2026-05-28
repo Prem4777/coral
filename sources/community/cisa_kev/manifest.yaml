@@ -6,12 +6,12 @@ description: Query vulnerabilities and catalog metadata from the CISA Known Expl
 base_url: https://www.cisa.gov
 test_queries:
   - SELECT * FROM cisa_kev.vulnerabilities LIMIT 1
-  - SELECT "catalogVersion", "dateReleased", count FROM cisa_kev.catalog LIMIT 1
+  - SELECT catalog_version, date_released, count FROM cisa_kev.catalog LIMIT 1
 tables:
   - name: catalog
     description: Single-row feed metadata for the CISA Known Exploited Vulnerabilities catalog. Use this to check feed freshness before joining with vulnerability rows.
     guide: >-
-      Start with `SELECT "catalogVersion", "dateReleased", count FROM
+      Start with `SELECT catalog_version, date_released, count FROM
       cisa_kev.catalog`. The table returns one row with the top-level feed
       metadata fields from the JSON document.
     request:
@@ -22,12 +22,12 @@ tables:
     pagination:
       mode: none
     columns:
-      - name: catalogVersion
+      - name: catalog_version
         type: Utf8
         description: CISA catalog version string.
         nullable: false
         expr: { kind: path, path: [catalogVersion] }
-      - name: dateReleased
+      - name: date_released
         type: Utf8
         description: Date the catalog feed was released.
         nullable: false
