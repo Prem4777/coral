@@ -17,10 +17,10 @@ This is a static JSON file served by CISA. There is no documented rate limit, bu
 
 ## Tables
 
-| Table | Description |
-|---|---|
-| `catalog` | Single-row feed metadata for the KEV catalog, including version and release date |
-| `vulnerabilities` | All entries in the KEV catalog — one row per CVE |
+| Table             | Description                                                                      |
+| ----------------- | -------------------------------------------------------------------------------- |
+| `catalog`         | Single-row feed metadata for the KEV catalog, including version and release date |
+| `vulnerabilities` | All entries in the KEV catalog — one row per CVE                                 |
 
 ---
 
@@ -28,36 +28,36 @@ This is a static JSON file served by CISA. There is no documented rate limit, bu
 
 Single-row feed metadata for the CISA KEV catalog. Use this table to check feed freshness before joining with vulnerability rows.
 
-| Column | Type | Description |
-|---|---|---|
-| `catalogVersion` | `Utf8` | CISA catalog version string |
-| `dateReleased` | `Utf8` | Date the catalog feed was released |
-| `count` | `Int64` | Number of vulnerability rows in the feed |
+| Column           | Type    | Description                              |
+| ---------------- | ------- | ---------------------------------------- |
+| `catalogVersion` | `Utf8`  | CISA catalog version string              |
+| `dateReleased`   | `Utf8`  | Date the catalog feed was released       |
+| `count`          | `Int64` | Number of vulnerability rows in the feed |
 
 ## Quick Start
 
 ```bash
 # Confirm connectivity and freshness metadata
-coral sql "SELECT catalogVersion, dateReleased, count FROM cisa_kev.catalog LIMIT 1"
+coral sql "SELECT \"catalogVersion\", \"dateReleased\", count FROM cisa_kev.catalog LIMIT 1"
 ```
 
 ### `vulnerabilities`
 
 All entries in the CISA KEV catalog. Each row is one CVE that CISA has confirmed as actively exploited.
 
-| Column | Type | Description |
-|---|---|---|
-| `cve_id` | `Utf8` | CVE identifier (e.g. `CVE-2021-44228`) |
-| `vendor_project` | `Utf8` | Vendor or project name |
-| `product` | `Utf8` | Affected product name |
-| `vulnerability_name` | `Utf8` | Short human-readable vulnerability name |
-| `date_added` | `Utf8` | Date added to the KEV catalog (`YYYY-MM-DD`) |
-| `short_description` | `Utf8` | Brief description of the vulnerability |
-| `required_action` | `Utf8` | Remediation action required by CISA |
-| `due_date` | `Utf8` | Federal agency remediation due date (`YYYY-MM-DD`) |
-| `known_ransomware_campaign_use` | `Utf8` | `Known` or `Unknown` ransomware campaign use |
-| `notes` | `Utf8` | Additional references and notes |
-| `cwes` | `Json` | Array of associated CWE identifiers |
+| Column                          | Type   | Description                                        |
+| ------------------------------- | ------ | -------------------------------------------------- |
+| `cve_id`                        | `Utf8` | CVE identifier (e.g. `CVE-2021-44228`)             |
+| `vendor_project`                | `Utf8` | Vendor or project name                             |
+| `product`                       | `Utf8` | Affected product name                              |
+| `vulnerability_name`            | `Utf8` | Short human-readable vulnerability name            |
+| `date_added`                    | `Utf8` | Date added to the KEV catalog (`YYYY-MM-DD`)       |
+| `short_description`             | `Utf8` | Brief description of the vulnerability             |
+| `required_action`               | `Utf8` | Remediation action required by CISA                |
+| `due_date`                      | `Utf8` | Federal agency remediation due date (`YYYY-MM-DD`) |
+| `known_ransomware_campaign_use` | `Utf8` | `Known` or `Unknown` ransomware campaign use       |
+| `notes`                         | `Utf8` | Additional references and notes                    |
+| `cwes`                          | `Json` | Array of associated CWE identifiers                |
 
 ---
 
